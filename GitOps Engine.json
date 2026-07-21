@@ -1,0 +1,1510 @@
+{
+  "name": "GitOps Engine",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        448
+      ],
+      "id": "6177870d-b746-4288-9bfe-9e4536e1b2dc",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{\n  {\n    //Nombre del repo donde se guadarán/extraerán los respaldos\n    repo_name: 'my_n8n_repo',\n\n    //Nombre del usuario propietario del repo\n    repo_owner: 'junforever',\n\n    //Tipo de repo para la creación si no existe, true para repo privado, false para público\n    repo_private: true,\n\n    //Descripción del repo para la creación si no existe\n    repo_description: 'Repositorio de respaldo de todos los flujos de n8n',\n\n    //Versión del API de Github\n    api_version: '2022-11-28',\n\n    //Mensaje para el commit de un nuevo flujo\n    commit_added: 'Nuevo workflow',\n\n    //Mensaje para el commit de un flujo que se va a eliminar para ser reemplazado por la versión con el nuevo nombre\n    commit_deleted: 'Workflow <name> renombrado a <new_name>',\n\n    //Mensaje para el commit de un flujo eliminado\n    commit_clean: 'Workflow elimininado',\n\n    //Mensaje para el commit de un flujo que fue renombrado\n    commit_renamed: 'Workflow <name> renombrado',\n\n    //Mensaje para el commit de un flujo que fur actualizado\n    commit_updated: 'Workflow actualizado',\n\n    //Caracter para la separación de los bloques del nombre de los archivos, NO USAR - ni _ porque algunos ids pueden incluir dichos caracteres\n    separator_character: ':'\n  }\n}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1056,
+        448
+      ],
+      "id": "87b324b7-06da-4a40-84f7-321659b7e5b7",
+      "name": "config"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.github.com/user/repos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "={{ $('config').first().json.api_version }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    name: $('config').item.json.repo_name,\n    description: $('config').item.json.repo_description,\n    private: $('config').item.json.repo_private\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        976,
+        656
+      ],
+      "id": "6e184763-3e3e-4de1-a37a-bfc36ec35807",
+      "name": "create_repo",
+      "credentials": {
+        "githubApi": {
+          "id": "vpiK8QbwX4DFly5N",
+          "name": "GitHub Api Token"
+        },
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "filters": {
+          "excludePinnedData": true
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        448
+      ],
+      "id": "612f0e64-f118-459c-9115-3e0b46d8ebf8",
+      "name": "get_workflows",
+      "credentials": {
+        "n8nApi": {
+          "id": "sRozWvHNf8IfV7gc",
+          "name": "n8n_main"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7663efd7-8875-420a-abc9-8cc16fc1d2df",
+              "leftValue": "={{ $json.isArchived }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -512,
+        448
+      ],
+      "id": "e17f74b5-f7c7-4555-b990-d071c8a8eb83",
+      "name": "get_not_archived",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('config').item.json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('config').item.json.repo_name }}",
+          "mode": "name"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        336
+      ],
+      "id": "a0c2a68e-395e-4436-9f36-26a3e85cac71",
+      "name": "list_files",
+      "webhookId": "807a44c8-0d4a-449f-9760-2d134aeeb0de",
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "682bde8c-5869-4a1c-8a36-d1a82c148885",
+              "leftValue": "={{ $('get_not_archived').all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -272,
+        448
+      ],
+      "id": "5aea626a-1e7f-4f3c-a3e1-151d92ac83a4",
+      "name": "exists_workflows",
+      "executeOnce": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        704
+      ],
+      "id": "2b32c55d-17bc-4f96-b715-2fc2e7e0ca5a",
+      "name": "do_nothing"
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\n\n/**\n * Sanitiza el nombre del workflow para eliminar caracteres conflictivos antes de subir el archivo a github\n */\nfunction sanitizeWorkflowName(name) {\n  const replaceBy = '_'\n  return (\n    String(name ?? '')\n      .replaceAll(/[-<>:\"/\\\\|?*\\u0000-\\u001F\\u007F]/g, replaceBy)\n      .trim() ||\n    'workflow'\n  );\n}\n\n/**\n * Ordena recursivamente las claves de los objetos\n * IMPORTANTE: NO ordena arrays aquí solo ordena las keys de sus elementos que sean tipo object\n */\nfunction sortObject(value) {\n  if (Array.isArray(value)) {\n    return value.map(sortObject);\n  }\n  if (value && typeof value === 'object') {\n    return Object.keys(value)\n      .sort()\n      .reduce((acc, key) => {\n        acc[key] = sortObject(value[key]);\n        return acc;\n      }, {});\n  }\n  return value;\n}\n\n/**\n * Normaliza y ordena determinísticamente las conexiones\n */\nfunction normalizeConnections(connections = {}) {\n  const sorted = sortObject(connections);\n\n  for (const sourceNode of Object.keys(sorted)) {\n    for (const outputType of Object.keys(sorted[sourceNode])) {\n      sorted[sourceNode][outputType] = sorted[sourceNode][outputType].map(\n        (connectionArray) =>\n          connectionArray\n            .map(sortObject)\n            .sort((a, b) =>\n              `${a.node}:${a.index}`.localeCompare(`${b.node}:${b.index}`)\n            )\n      );\n    }\n  }\n\n  return sorted;\n}\n\nfunction canonicalizeWorkflow(workflow) {\n  /**\n   * Canonicalización de nodos\n   * - Excluye node.id\n   * - Excluye credentials.id\n   * - Mantiene name y position\n   * - ORDENA los nodos por name (clave estable)\n   */\n  const canonicalNodes = workflow.nodes\n    .map((node) => {\n      const { id, credentials, ...rest } = node;\n\n      const canonicalNode = sortObject(rest);\n\n      if (credentials) {\n        canonicalNode.credentials = {};\n        for (const [credType, credValue] of Object.entries(credentials)) {\n          canonicalNode.credentials[credType] = {\n            name: credValue.name,\n          };\n        }\n      }\n\n      return canonicalNode;\n    })\n    .sort((a, b) => a.name.localeCompare(b.name));\n\n  /**\n   * Workflow canónico final\n   * SOLO toma los campos que definen el comportamiento real\n   */\n  const canonicalWorkflow = {\n    nodes: canonicalNodes,\n    connections: normalizeConnections(workflow.connections),\n    settings: sortObject(workflow.settings ?? {}),\n  };\n\n  return sortObject(canonicalWorkflow);\n}\n\n/* =========================\n   Generación de SHA\n   ========================= */\n\nlet response = [];\n\nfor (const item of $('get_not_archived').all()) {\n  const canonical = canonicalizeWorkflow(item.json);\n  const canonicalString = JSON.stringify(canonical);\n\n  const sha = crypto\n    .createHash('sha256')\n    .update(canonicalString)\n    .digest('hex');\n\n  response.push({\n    sha,\n    id: item.json.id,\n    name: sanitizeWorkflowName(item.json.name),\n    content: item.json,\n  });\n}\n\nreturn response;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        432
+      ],
+      "id": "f22d83fe-a21d-44af-b3d0-8a07a4de598e",
+      "name": "get_file_sha"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $('get_file_sha').all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        656
+      ],
+      "id": "eaa50ca3-7947-4868-95e9-c14f9e91d8ad",
+      "name": "workflows_init"
+    },
+    {
+      "parameters": {
+        "content": "## Step 1\n\n- Retrieve all workflows available in n8n.\n- Keep only workflows that are not archived.\n- Verify that at least one workflow remains to be backed up.\n\n### Scope and operation\n\n- By default, archived workflows are not backed up. Disable or delete `get_not_archived` if you need to back up every workflow.\n- The Manual Trigger is included for testing. For production, replace it with a Schedule/Cron Trigger and activate the workflow so production executions and error-workflow notifications can run.\n- Avoid simultaneous executions targeting the same repository. Use one backup workflow per repository and choose a schedule that allows each execution to finish before the next one starts.\n- The workflow timeout is currently 300 seconds. Increase it in Workflow Settings when backing up many workflows or when the network connection is slow.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Paso 1\n\n- Obtener todos los workflows disponibles en n8n.\n- Conservar únicamente los workflows que no estén archivados.\n- Verificar que exista al menos un workflow para respaldar después del filtrado.\n\n### Alcance y operación\n\n- De forma predeterminada, los workflows archivados no se respaldan. Desactiva o elimina `get_not_archived` si necesitas respaldarlos todos.\n- El Manual Trigger se incluye para pruebas. Para producción, reemplázalo por un Schedule/Cron Trigger y activa el workflow para permitir ejecuciones de producción y notificaciones del workflow de errores.\n- Evita ejecuciones simultáneas contra el mismo repositorio. Utiliza un único workflow de respaldo por repositorio y una frecuencia que permita terminar cada ejecución antes de iniciar la siguiente.\n- El timeout actual del workflow es de 300 segundos. Auméntalo en Workflow Settings cuando existan muchos workflows o la conexión de red sea lenta.",
+        "height": 1356,
+        "width": 736,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -816,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "8412dacf-a3ae-476f-b7fa-f6305a275e56",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Step 2\n\nGenerate a deterministic semantic SHA for every workflow.\n\n### SHA criteria\n\nOnly `nodes`, `connections`, and `settings` are included in the canonical representation.\n\n#### Excluded at workflow level\n\n- `updatedAt`\n- `createdAt`\n- `versionId`\n- `activeVersionId`\n- `activeVersion`\n- `triggerCount`\n- `staticData`\n- `meta`\n- `shared`\n- `tags`\n- `name`\n- `active`\n- `isArchived` (already filtered)\n- `id` (used only in the filename)\n\n#### Excluded at node and credential level\n\n- Internal node UUID: `node.id`\n- Credential IDs: `credentials.*.id`\n\n### Important notes\n\n- The `shared` section is intentionally excluded because workflow sharing is a paid feature and does not apply to Community Edition.\n- This is a semantic SHA, not the GitHub blob SHA.\n- Existing workflow JSON files are not downloaded from GitHub. Therefore, manual changes made directly to their contents are not detected while the semantic SHA stored in the filename remains unchanged.\n- Workflow names are sanitized before building filenames. The current sanitizer replaces `-`, `<`, `>`, `:`, `\"`, `/`, `\\`, `|`, `?`, `*`, ASCII control characters `U+0000–U+001F`, and `U+007F` with `_`. This is only for the file name in Github, the workflow name inside the json file doesn't change.\n- If you change `separator_character`, make sure the new separator is also replaced by `sanitizeWorkflowName` so it cannot break the filename structure.\n\n\n\n\n\n\n\n\n\n\n## Paso 2\n\nGenerar un SHA semántico determinista para cada workflow.\n\n### Criterios del SHA\n\nLa representación canónica incluye únicamente `nodes`, `connections` y `settings`.\n\n#### Excluidos a nivel del workflow\n\n- `updatedAt`\n- `createdAt`\n- `versionId`\n- `activeVersionId`\n- `activeVersion`\n- `triggerCount`\n- `staticData`\n- `meta`\n- `shared`\n- `tags`\n- `name`\n- `active`\n- `isArchived` (ya filtrado)\n- `id` (utilizado únicamente en el nombre del archivo)\n\n#### Excluidos a nivel de nodos y credenciales\n\n- UUID interno del nodo: `node.id`\n- IDs de credenciales: `credentials.*.id`\n\n### Notas importantes\n\n- La sección `shared` se excluye intencionalmente porque compartir workflows es una función de pago y no aplica a Community Edition.\n- Este es un SHA semántico, no el SHA blob generado por GitHub.\n- Los archivos JSON existentes no se descargan desde GitHub. Por tanto, los cambios manuales realizados directamente en su contenido no se detectan mientras el SHA semántico guardado en el nombre permanezca igual.\n- Los nombres de los workflows se sanitizan antes de construir los nombres de archivo. El sanitizador actual reemplaza `-`, `<`, `>`, `:`, `\"`, `/`, `\\`, `|`, `?`, `*`, los caracteres de control ASCII `U+0000–U+001F` y `U+007F` por `_`. Esta sanitización solo cambia el nombre para el archivo que se va a crear en Github, no cambia el nombre del flujo en el archivo json.\n- Si cambias `separator_character`, asegúrate de que el nuevo separador también sea reemplazado por `sanitizeWorkflowName` para que no rompa la estructura del nombre del archivo.",
+        "height": 3316,
+        "width": 288,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -32,
+        -1104
+      ],
+      "typeVersion": 1,
+      "id": "0a693abb-1f1e-4a24-8501-6a4e469a667f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Step 3\n\n- Verify whether the configured GitHub repository exists.\n- Route the response by category:\n  - Success: list the files in the repository.\n  - `404`: follow the repository-creation path.\n  - Authentication, permissions, API rate limit, connectivity, and unexpected failures: stop the execution with the corresponding Stop And Error node.\n- If the repository does not exist, create it using `repo_private` and then create one backup file for every item from `get_file_sha`.\n- List the files stored in the repository root and compare them with the current n8n workflows in `files_analizer`.\n\n### Classification\n\n1. Workflow content changed but its name did not.\n2. Workflow was renamed, regardless of whether its content also changed.\n3. Workflow is new.\n4. Workflow was deleted from n8n.\n\nIf the repository is empty, create all backup files from `get_file_sha`.\n\n### Repository and filename behavior\n\n- Backup files use the format `<workflow_id><separator><semantic_sha><separator><workflow_name>.json`.\n- Only files matching that structure are considered workflow backups; files such as `README.md` or unrelated JSON files are ignored.\n- All backups are stored in the repository root. This template does not create subfolders or reproduce the n8n folder hierarchy.\n- By default, a missing repository is created as private. Set `repo_private` to `false` if a public repository is required.\n- GitHub may return `404` both when the repository does not exist and when it is private but the credential cannot access it. This workflow treats both responses as a missing repository and follows the creation path.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Paso 3\n\n- Verificar si existe el repositorio de GitHub configurado.\n- Clasificar la respuesta:\n  - Éxito: listar los archivos del repositorio.\n  - `404`: continuar por la ruta de creación del repositorio.\n  - Errores de autenticación, permisos, límite de API, conectividad o respuestas inesperadas: detener la ejecución con el nodo Stop And Error correspondiente.\n- Si el repositorio no existe, crearlo utilizando `repo_private` y luego crear un archivo de respaldo por cada elemento de `get_file_sha`.\n- Listar los archivos guardados en la raíz del repositorio y compararlos con los workflows actuales de n8n en `files_analizer`.\n\n### Clasificación\n\n1. El contenido del workflow cambió, pero su nombre no.\n2. El workflow fue renombrado, independientemente de si también cambió su contenido.\n3. El workflow es nuevo.\n4. El workflow fue eliminado de n8n.\n\nSi el repositorio está vacío, crear todos los archivos de respaldo desde `get_file_sha`.\n\n### Comportamiento del repositorio y los nombres de archivo\n\n- Los archivos de respaldo utilizan el formato `<workflow_id><separador><sha_semántico><separador><nombre_workflow>.json`.\n- Solo los archivos que cumplen esa estructura se consideran respaldos de workflows; archivos como `README.md` u otros JSON se ignoran.\n- Todos los respaldos se guardan en la raíz del repositorio. Esta plantilla no crea subcarpetas ni reproduce la jerarquía de carpetas de n8n.\n- De forma predeterminada, un repositorio inexistente se crea como privado. Usa `repo_private` en `false` si necesitas un repositorio público.\n- GitHub puede devolver `404` tanto cuando el repositorio no existe como cuando es privado y la credencial no tiene acceso. Este workflow trata ambas respuestas como repositorio inexistente y continúa por la ruta de creación.",
+        "height": 2792,
+        "width": 1648,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        304,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "ec749936-2554-47e5-bdd8-ad104139f118",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "/*** \n* Entradas \n***/\n\n//workflows de n8n\nconst n8nWorkflows = $('get_file_sha').all().map(node => node.json); \n\n//archivos del repo de Github\nconst githubFiles = $('list_files').all().map(node => node.json);  \n\n//caracter separador\nconst separatorCharacter = $('config').first().json.separator_character;\n\n/*** \n* Helpers \n***/\n\n//Extraer los bloques de información del nombre de los archivos de github <id>:<sha>:<name>.json\nfunction parseGithubFilename(filename) {\n  const clean = filename.replace(/\\.json$/, '');\n  const parts = clean.split(separatorCharacter);\n\n  return {\n    id: parts[0],\n    sha: parts[1],\n    name: parts.slice(2).join(separatorCharacter)\n  };\n}\n\n//Ignorar archivos de Github que no sigan el patrón de nombre de los flujos (README, otros json, etc.)\nfunction isWorkflowFile(filename, escapedSeparator = separatorCharacter) {\n  const regex = new RegExp(\n    `^[^${escapedSeparator}]+${escapedSeparator}[a-f0-9]{8,}${escapedSeparator}.*\\\\.json$`,\n    'i'\n  );\n  \n  //return /^[^:]+:[a-f0-9]{8,}:.*\\.json$/i.test(filename);\n  return regex.test(filename);\n}\n\n/*** \n* Pre procesamiento \n***/\n\n//Indexar los archivos de GitHub por id del workflow\nconst githubById = new Map();\n\nfor (const file of githubFiles) {\n  if (!isWorkflowFile(file.name)) {\n    continue;\n  }\n  const parsed = parseGithubFilename(file.name);\n\n  githubById.set(parsed.id, {\n    ...parsed,\n    fileSha: file.sha,\n    path: file.path,\n    originalName: file.name\n  });\n}\n\n//Indexar los archivos de n8n por id del workflow\nconst n8nById = new Map();\nfor (const wf of n8nWorkflows) {\n  n8nById.set(wf.id, wf);\n}\n\n/*** \n* Lógica de comparación \n***/\n\n//Archivos que tienen cambios pero su nombre es el mismo\nconst changedContentSameName = [];\n\n//Archivos que fueron renombrados independientemente de si tuvieron cambios o no\nconst renamed = [];\n\n//Nuevos workflows\nconst newWorkflows = [];\n\n//Workflows que ha sido eliminados de n8n\nconst deletedWorkflows = [];\n\n// Comparar n8n → GitHub\nfor (const wf of n8nWorkflows) {\n  const gh = githubById.get(wf.id);\n\n  // Nuevo workflow\n  if (!gh) {\n    newWorkflows.push(wf);\n    continue;\n  }\n\n  const sameName = gh.name === wf.name;\n  const sameSha = gh.sha === wf.sha;\n\n  //Workflow Renombrado\n  if (!sameName) {\n    renamed.push({\n      workflow: wf,\n      github: gh\n    });\n    continue;\n  }\n\n  //Workflow con cambios pero el mismo nombre\n  if (!sameSha) {\n    changedContentSameName.push({\n      workflow: wf,\n      github: gh\n    });\n  }\n}\n\n//Workflow eliminado en n8n (GitHub → n8n)\nfor (const [id, gh] of githubById.entries()) {\n  if (!n8nById.has(id)) {\n    deletedWorkflows.push(gh);\n  }\n}\n\n// item único con los 4 arreglos\nreturn [\n  {\n    changedContentSameName,\n    renamed,\n    newWorkflows,\n    deletedWorkflows\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1616,
+        304
+      ],
+      "id": "175dc6b2-33ca-4e95-b68e-c3d124aee383",
+      "name": "files_analizer"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b10292a6-b300-4c10-8f15-2fd53332774e",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1312,
+        320
+      ],
+      "id": "afcb433b-12e0-443c-9e72-688989bf1121",
+      "name": "exists_files"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "changedContentSameName",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2448,
+        -304
+      ],
+      "id": "b093ea13-08f6-4b10-9266-c3942684f409",
+      "name": "changed_content_same_name"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "renamed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        192
+      ],
+      "id": "8142b236-1e77-4a8d-b546-49d8c1dca59c",
+      "name": "renamed"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('config').item.json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('config').item.json.repo_name }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $json.id }}{{ $('config').first().json.separator_character }}{{ $json.sha }}{{ $('config').first().json.separator_character }}{{ $json.name }}.json",
+        "fileContent": "={{ JSON.stringify($json.content, null, 2) }}",
+        "commitMessage": "={{ $('config').item.json.commit_added }}"
+      },
+      "id": "3de283e5-4af4-415a-95d7-13605b6501cb",
+      "name": "create_files",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1776,
+        816
+      ],
+      "webhookId": "3ba252a0-adac-44b6-9376-d870f52e28bd",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_name }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $json.workflow.id }}{{ $('config').first().json.separator_character }}{{ $json.workflow.sha }}{{ $('config').first().json.separator_character }}{{ $json.workflow.name }}.json",
+        "fileContent": "={{ JSON.stringify($json.workflow.content, null, 2) }}",
+        "commitMessage": "={{ $('config').first().json.commit_updated }}"
+      },
+      "id": "65c6e93e-7efd-4bef-9220-03acee203704",
+      "name": "create_updated_file",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        3024,
+        -160
+      ],
+      "webhookId": "ad758c2a-4f50-4db1-a3f3-a422c67ac0a2",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('config').first().json.repo_name }}"
+        },
+        "filePath": "={{ $('loop_over_renamed').item.json.github.path }}",
+        "commitMessage": "={{ $('config').first().json.commit_deleted.replace('<name>',$('loop_over_renamed').item.json.github.name).replace('<new_name>', $('loop_over_renamed').item.json.workflow.name) }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        3232,
+        368
+      ],
+      "id": "9a5c4af6-546c-4944-b93d-c6916f0205f8",
+      "name": "delete_previous_files",
+      "webhookId": "4c297c0f-b89a-4513-9225-06b537bddcd0",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_name }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('renamed').item.json.workflow.id }}{{ $('config').first().json.separator_character }}{{ $('renamed').item.json.workflow.sha }}{{ $('config').first().json.separator_character }}{{ $('renamed').item.json.workflow.name }}.json",
+        "fileContent": "={{ JSON.stringify($('renamed').item.json.workflow.content, null, 2) }}",
+        "commitMessage": "={{ $('config').first().json.commit_renamed.replace('<name>', $('renamed').item.json.github.name) }}"
+      },
+      "id": "f52ca85c-5413-4f44-9eeb-b0fb80d38036",
+      "name": "create_renamed_files",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2992,
+        368
+      ],
+      "webhookId": "3ba252a0-adac-44b6-9376-d870f52e28bd",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "newWorkflows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2416,
+        704
+      ],
+      "id": "e3d58e07-6a05-4a48-a906-156fd0b33871",
+      "name": "new_workflows"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_name }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('new_workflows').item.json.id }}{{ $('config').first().json.separator_character }}{{ $('new_workflows').item.json.sha }}{{ $('config').first().json.separator_character }}{{ $('new_workflows').item.json.name }}.json",
+        "fileContent": "={{ JSON.stringify($('new_workflows').item.json.content, null, 2) }}",
+        "commitMessage": "={{ $('config').first().json.commit_added }}"
+      },
+      "id": "d262d836-8ad7-44bc-85c2-0764addf8a41",
+      "name": "create_new_files",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        3024,
+        848
+      ],
+      "webhookId": "3ba252a0-adac-44b6-9376-d870f52e28bd",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "deletedWorkflows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2416,
+        1200
+      ],
+      "id": "944e3257-1dec-497b-add1-89b50ab40f79",
+      "name": "deleted_workflows"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('config').first().json.repo_name }}"
+        },
+        "filePath": "={{ $json.path }}",
+        "commitMessage": "={{ $('config').first().json.commit_clean }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        3040,
+        1360
+      ],
+      "id": "002cf69d-476b-40b3-86cf-edfc2f21ecbd",
+      "name": "delete_files",
+      "webhookId": "4c297c0f-b89a-4513-9225-06b537bddcd0",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Step 4\n\n- For a workflow whose content changed but whose name did not, first create the replacement file using the new semantic SHA and then delete the outdated file.\n- For a renamed workflow, first create the file with the new name and then delete the previous file, regardless of whether its content also changed.\n- Create backup files for new workflows.\n- Delete backup files for workflows that no longer exist in n8n.\n\nCreating the replacement before deleting the previous file reduces the risk of losing the last available backup if GitHub rejects the create operation.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Paso 4\n\n- Para un workflow cuyo contenido cambió, pero cuyo nombre no, primero crear el archivo de reemplazo utilizando el nuevo SHA semántico y después eliminar el archivo desactualizado.\n- Para un workflow renombrado, primero crear el archivo con el nuevo nombre y después eliminar el archivo anterior, independientemente de si también cambió su contenido.\n- Crear archivos de respaldo para los workflows nuevos.\n- Eliminar los archivos de respaldo de los workflows que ya no existen en n8n.\n\nCrear el reemplazo antes de eliminar el archivo anterior reduce el riesgo de perder el último respaldo disponible si GitHub rechaza la operación de creación.",
+        "height": 2540,
+        "width": 1280,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2240,
+        -640
+      ],
+      "typeVersion": 1,
+      "id": "e9439911-1f9e-4d8e-a5e7-4fb168a8cc87",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Master Configuration\n\nSet the base values used throughout the workflow:\n\n- `repo_name`: GitHub repository used to store the backups.\n- `repo_owner`: GitHub user or organization that owns the repository.\n- `repo_private`: visibility used only when the repository must be created. The default is `true` (private); set it to `false` to create a public repository.\n- `repo_description`: description used when creating the repository.\n- `api_version`: GitHub REST API version.\n- Commit-message fields: messages used for create, update, rename, and delete operations.\n- `separator_character`: character used to separate workflow ID, semantic SHA, and workflow name in each backup filename.\n\n### Security and ownership\n\n- Store tokens and other sensitive values only in native n8n credentials. Never hardcode secrets in nodes, expressions, or Code nodes.\n- All GitHub and HTTP Request nodes must use the same GitHub OAuth2 credential.\n- The OAuth2 credential should belong to the user configured as `repo_owner`. For organization-owned repositories, that user must have the required repository permissions.\n- Publish this template with MCP access disabled. Anyone who enables MCP after importing it is responsible for that decision.\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Nodo maestro\n\nEstablece los valores base utilizados en todo el workflow:\n\n- `repo_name`: repositorio de GitHub utilizado para guardar los respaldos.\n- `repo_owner`: usuario u organización de GitHub propietario del repositorio.\n- `repo_private`: visibilidad utilizada únicamente cuando se debe crear el repositorio. El valor predeterminado es `true` (privado); usa `false` para crear un repositorio público.\n- `repo_description`: descripción utilizada al crear el repositorio.\n- `api_version`: versión de la API REST de GitHub.\n- Campos de mensajes de commit: mensajes utilizados para crear, actualizar, renombrar y eliminar archivos.\n- `separator_character`: carácter utilizado para separar el ID, el SHA semántico y el nombre del workflow en cada archivo de respaldo.\n\n### Seguridad y propiedad\n\n- Guarda tokens y otros valores sensibles únicamente en credenciales nativas de n8n. Nunca escribas secretos directamente en nodos, expresiones o nodos Code.\n- Todos los nodos GitHub y HTTP Request deben utilizar la misma credencial GitHub OAuth2.\n- La credencial OAuth2 debe pertenecer al usuario configurado como `repo_owner`. Para repositorios de organizaciones, ese usuario debe tener los permisos necesarios.\n- Publica esta plantilla con el acceso MCP desactivado. Quien lo active después de importarla será responsable de esa decisión.",
+        "height": 2332,
+        "width": 304,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1152,
+        -640
+      ],
+      "typeVersion": 1,
+      "id": "3ede4919-4bd4-4dac-9298-5bbfa404ab7e",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# GitOps Engine\n",
+        "height": 112,
+        "width": 192,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        944,
+        -1968
+      ],
+      "typeVersion": 1,
+      "id": "f0bfbad7-5a80-451f-af00-d871a368b466",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "files_created",
+      "typeVersion": 1,
+      "position": [
+        1776,
+        640
+      ],
+      "id": "7ca3ed44-417f-4414-b85c-c4c9fb17b708"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1536,
+        656
+      ],
+      "id": "5d610f35-3908-4e4e-868a-d0335fe962b6",
+      "name": "loop_new_items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3024,
+        -320
+      ],
+      "id": "bfae9e31-f53e-4ce6-a624-4c49f2029731",
+      "name": "files_updated"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2704,
+        192
+      ],
+      "id": "4e68cf4c-649c-4eb1-b74d-036d078dc0c5",
+      "name": "loop_over_renamed"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2704,
+        -304
+      ],
+      "id": "161ed7b5-5c59-473b-920c-1cb7ec6536b7",
+      "name": "loop_over_updated"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2992,
+        176
+      ],
+      "id": "fb21cb5f-de0d-4988-ab98-120c629fb5bc",
+      "name": "files_renamed"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2704,
+        704
+      ],
+      "id": "f4be7efa-cf0a-4646-9a98-dfe37f0e5cce",
+      "name": "loop_over_created"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3024,
+        688
+      ],
+      "id": "c1d0347f-cf45-4a1f-b4ed-321d864f9c95",
+      "name": "files_created1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2720,
+        1200
+      ],
+      "id": "81ccbd4b-4679-4d48-b714-e81365c08014",
+      "name": "loop_over_deleted"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        1184
+      ],
+      "id": "b62fc2c3-fa7b-4d2a-b3a3-d19765e94cf1",
+      "name": "files_deleted"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('config').first().json.repo_name }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('changed_content_same_name').item.json.github.path }}",
+        "commitMessage": "={{ $('config').first().json.commit_updated }}"
+      },
+      "id": "8f44a1ab-b984-473c-a254-4d941b9ac362",
+      "name": "delete_outdated_file",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        3264,
+        -160
+      ],
+      "webhookId": "e68de1cd-2202-4152-b548-17c7fb01d05a",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ 'https://api.github.com/repos/' + $('config').item.json.repo_owner + '/' + $('config').item.json.repo_name }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "={{ $('config').first().json.api_version }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "7d054d12-5c2a-4be4-b8ac-e5893ca87504",
+      "name": "verify_repo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        368,
+        432
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "FeGjADi8clyKFSOs",
+          "name": "GitHub OAuth2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ 'Autenticación con GitHub fallida (HTTP ' + ($json.statusCode ?? 'desconocido') + '). Revisa o renueva la credencial GitHub OAuth2. Detalle: ' + ($json.body?.message ?? $json.message ?? 'sin detalle') }}"
+      },
+      "id": "fd134c23-f212-4b97-aaeb-6684e437d6b5",
+      "name": "github_authentication_error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        672,
+        752
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ 'GitHub bloqueó la solicitud por límite de API (HTTP ' + ($json.statusCode ?? 'desconocido') + '). Retry-After: ' + ($json.headers?.['retry-after'] ?? 'no informado') + '; reset: ' + ($json.headers?.['x-ratelimit-reset'] ?? 'no informado') + '. Detalle: ' + ($json.body?.message ?? $json.message ?? 'sin detalle') }}"
+      },
+      "id": "572617d2-0135-43fa-9d3e-c7d4f0bb3daf",
+      "name": "github_rate_limit_error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        672,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ 'GitHub rechazó la solicitud por permisos insuficientes (HTTP ' + ($json.statusCode ?? 'desconocido') + '). Revisa el acceso al repositorio y los permisos de la credencial. Detalle: ' + ($json.body?.message ?? $json.message ?? 'sin detalle') }}"
+      },
+      "id": "c046ea6f-f1c8-4243-b388-73ae51c1d235",
+      "name": "github_permissions_error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        672,
+        1184
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ 'Respuesta inesperada al verificar el repositorio en GitHub (HTTP ' + ($json.statusCode ?? 'desconocido') + '). Detalle: ' + ($json.body?.message ?? $json.message ?? 'sin detalle') }}"
+      },
+      "id": "69e15afc-f3da-44e5-9b13-40a7ec739342",
+      "name": "github_unexpected_error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        672,
+        1424
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ 'No fue posible conectar con GitHub. Revisa DNS, conectividad y tiempos de espera. Detalle: ' + ($json.error?.message ?? $json.error ?? $json.message ?? 'sin detalle') }}"
+      },
+      "id": "49b2a515-3bf2-4bab-a68f-897942b4235b",
+      "name": "github_connectivity_error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        384,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ Number($json.statusCode) >= 200 && Number($json.statusCode) < 300}}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "e1198b4f-3f27-46a9-8e7f-8eb0ff5d4ef4"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "repo_found"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dad8ca11-3ac8-49c6-b84d-83cacc3b7b06",
+                    "leftValue": "={{ Number($json.statusCode) }}",
+                    "rightValue": 404,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "repo_not_found"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d55d8170-fe0f-46a8-b607-c96c52bce909",
+                    "leftValue": "={{ Number($json.statusCode) }}",
+                    "rightValue": 401,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "auth_error"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "edf6563e-69f9-46b6-98fb-909ccc67192a",
+                    "leftValue": "={{ Number($json.statusCode) }}",
+                    "rightValue": 429,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "rate_limit_error"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8f3c3686-7592-429e-b07a-2b6fdabdbc67",
+                    "leftValue": "={{ Number($json.statusCode) }}",
+                    "rightValue": 403,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "permission_error"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "unexpected_error"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        352
+      ],
+      "id": "7b48899f-ffc6-47f0-824f-cd488d83e336",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "content": "## Workflow Overview\n\nThis workflow backs up every non-archived n8n workflow as a readable JSON file in the root of a GitHub repository. It detects new, modified, renamed, and deleted workflows and synchronizes the repository accordingly.\n\n### Why is the semantic SHA stored in the filename?\n\nEach backup uses the structure `<workflow_id><separator><semantic_sha><separator><workflow_name>.json`.\n\nInstead of downloading every existing JSON file from GitHub on each execution, the workflow:\n\n1. Builds a deterministic SHA-256 from the workflow's behavior-relevant data: `nodes`, `connections`, and `settings`.\n2. Lists the repository files and extracts the workflow ID, semantic SHA, and name directly from each filename.\n3. Uploads a new file only when the semantic SHA or workflow name changed.\n\nThis reduces GitHub API requests, transferred data, memory usage, and execution time, especially when backing up many workflows.\n\n**Tradeoff:** because existing JSON files are not downloaded, manual changes made directly to their contents in GitHub are not detected while the semantic SHA stored in the filename remains unchanged.\n\n---\n\n## Descripción del workflow\n\nEste workflow respalda cada workflow no archivado de n8n como un archivo JSON legible en la raíz de un repositorio de GitHub. Detecta workflows nuevos, modificados, renombrados y eliminados, y sincroniza el repositorio según corresponda.\n\n### ¿Por qué se guarda el SHA semántico en el nombre del archivo?\n\nCada respaldo utiliza la estructura `<workflow_id><separador><sha_semántico><separador><nombre_workflow>.json`.\n\nEn lugar de descargar todos los archivos JSON existentes desde GitHub en cada ejecución, el workflow:\n\n1. Construye un SHA-256 determinista a partir de la información que define el comportamiento del workflow: `nodes`, `connections` y `settings`.\n2. Lista los archivos del repositorio y extrae el ID, el SHA semántico y el nombre directamente de cada nombre de archivo.\n3. Sube un archivo nuevo únicamente cuando cambia el SHA semántico o el nombre del workflow.\n\nEsto reduce las peticiones a la API de GitHub, los datos transferidos, el uso de memoria y el tiempo de ejecución, especialmente al respaldar muchos workflows.\n\n**Tradeoff:** como no se descargan los archivos JSON existentes, los cambios manuales realizados directamente en su contenido en GitHub no se detectan mientras el SHA semántico almacenado en el nombre permanezca igual.",
+        "height": 1074,
+        "width": 1008,
+        "color": "#172B7D"
+      },
+      "id": "45ded705-07c1-49e4-81d1-fa35dc411c67",
+      "name": "Workflow Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -1824
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "config": {
+      "main": [
+        [
+          {
+            "node": "get_workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_repo": {
+      "main": [
+        [
+          {
+            "node": "workflows_init",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_workflows": {
+      "main": [
+        [
+          {
+            "node": "get_not_archived",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_not_archived": {
+      "main": [
+        [
+          {
+            "node": "exists_workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "list_files": {
+      "main": [
+        [
+          {
+            "node": "exists_files",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "workflows_init",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "exists_workflows": {
+      "main": [
+        [
+          {
+            "node": "get_file_sha",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "do_nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "workflows_init": {
+      "main": [
+        [
+          {
+            "node": "loop_new_items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "exists_files": {
+      "main": [
+        [
+          {
+            "node": "files_analizer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "workflows_init",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "files_analizer": {
+      "main": [
+        [
+          {
+            "node": "changed_content_same_name",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "renamed",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "new_workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "deleted_workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "changed_content_same_name": {
+      "main": [
+        [
+          {
+            "node": "loop_over_updated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "renamed": {
+      "main": [
+        [
+          {
+            "node": "loop_over_renamed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete_previous_files": {
+      "main": [
+        [
+          {
+            "node": "loop_over_renamed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_renamed_files": {
+      "main": [
+        [
+          {
+            "node": "delete_previous_files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "new_workflows": {
+      "main": [
+        [
+          {
+            "node": "loop_over_created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deleted_workflows": {
+      "main": [
+        [
+          {
+            "node": "loop_over_deleted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_files": {
+      "main": [
+        [
+          {
+            "node": "loop_new_items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "loop_new_items": {
+      "main": [
+        [
+          {
+            "node": "files_created",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "create_files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "loop_over_renamed": {
+      "main": [
+        [
+          {
+            "node": "files_renamed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "create_renamed_files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "loop_over_updated": {
+      "main": [
+        [
+          {
+            "node": "files_updated",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "create_updated_file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "loop_over_created": {
+      "main": [
+        [
+          {
+            "node": "files_created1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "create_new_files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_new_files": {
+      "main": [
+        [
+          {
+            "node": "loop_over_created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "loop_over_deleted": {
+      "main": [
+        [
+          {
+            "node": "files_deleted",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "delete_files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete_files": {
+      "main": [
+        [
+          {
+            "node": "loop_over_deleted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_updated_file": {
+      "main": [
+        [
+          {
+            "node": "delete_outdated_file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete_outdated_file": {
+      "main": [
+        [
+          {
+            "node": "loop_over_updated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_file_sha": {
+      "main": [
+        [
+          {
+            "node": "verify_repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verify_repo": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "github_connectivity_error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "list_files",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "create_repo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "github_authentication_error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "github_rate_limit_error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "github_permissions_error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "github_unexpected_error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timezone": "America/Guayaquil",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "executionTimeout": 300
+  },
+  "versionId": "d4bee2ec-9377-4e5e-81fb-e862412fc127",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "2dbd6c7d3be1f4241a7ad2edfd22a5875e50099b9c1e640814e10f21739b61be"
+  },
+  "nodeGroups": [],
+  "id": "n5Yo7gghuWYovbIi",
+  "tags": []
+}
