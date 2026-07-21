@@ -12,7 +12,7 @@ Backs up every non-archived n8n workflow as a readable JSON file in the root of 
 
 For faster processing and reliable comparisons, each filename includes the workflow ID and a deterministic semantic SHA-256 generated from the workflow data that affects its behavior: `nodes`, `connections`, and `settings`. The workflow can therefore compare the metadata encoded in filenames instead of downloading every existing JSON file from GitHub on each run. This reduces API requests, data transfer, memory usage, and execution time while producing accurate change detection for the selected properties.
 
-## Follow Vibecode & Flow
+## Follow me on my social networks
 
 Follow me for practical content about automation, n8n, and AI development. I share real-world techniques, lessons, and details that almost nobody talks about—but that make a real difference when building solutions that actually work.
 
@@ -37,7 +37,7 @@ Respalda cada workflow no archivado de n8n como un archivo JSON legible en la ra
 
 Para lograr un procesamiento más rápido y comparaciones confiables, cada nombre de archivo incluye el ID del workflow y un SHA-256 semántico determinista generado a partir de los datos que afectan su comportamiento: `nodes`, `connections` y `settings`. De esta manera, el workflow puede comparar los metadatos incluidos en los nombres sin descargar desde GitHub todos los archivos JSON existentes en cada ejecución. Esto reduce las peticiones a la API, la transferencia de datos, el uso de memoria y el tiempo de ejecución, mientras detecta con precisión los cambios en las propiedades seleccionadas.
 
-## Sigue a Vibecode & Flow
+## Sígueme en mis redes sociales
 
 Sígueme para encontrar contenido práctico sobre automatizaciones, n8n y desarrollo con IA. Comparto técnicas, aprendizajes y detalles de uso real de los que casi nadie habla, pero que marcan la diferencia al construir soluciones que realmente funcionan.
 
