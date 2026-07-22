@@ -6,10 +6,10 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -672,
-        16
+        512,
+        512
       ],
-      "id": "3f2db0c4-bc18-4807-ac7d-b34065d8e932",
+      "id": "652f7bef-808f-4225-90e5-4eed84487432",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -21,10 +21,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -416,
-        16
+        768,
+        512
       ],
-      "id": "57a9e45f-bd76-4a11-b5bc-5a99d7041996",
+      "id": "58557534-fb66-4a91-94de-aaf21a69b389",
       "name": "config"
     },
     {
@@ -46,10 +46,10 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -176,
-        16
+        1008,
+        512
       ],
-      "id": "85cd0c1e-a6c1-4853-be98-344379e5f271",
+      "id": "da654cf8-5663-4d48-bb02-9cb128e82d8b",
       "name": "list_repo_files",
       "webhookId": "e38f3f92-625d-42b7-9942-bcb9f54a6333",
       "alwaysOutputData": false,
@@ -89,10 +89,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        48,
-        0
+        1232,
+        496
       ],
-      "id": "d84b2bdd-2b4b-42ba-81f9-b517b08d6c79",
+      "id": "c6f0f11f-004a-437c-8e53-2208082c53d3",
       "name": "get_only_workflows",
       "executeOnce": false
     },
@@ -105,10 +105,10 @@
       "type": "n8n-nodes-base.n8n",
       "typeVersion": 1,
       "position": [
-        1552,
-        160
+        2736,
+        656
       ],
-      "id": "f576a02c-f16e-40ac-8472-99fa7fa43a60",
+      "id": "0dbaceac-eb8e-4186-bd48-c164b6b25d4c",
       "name": "restore_workflow",
       "credentials": {
         "n8nApi": {
@@ -124,10 +124,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1328,
-        160
+        2512,
+        656
       ],
-      "id": "124b4589-bb72-4b82-b4c2-2712d2daa7fe",
+      "id": "6de99253-7ffb-46e2-a492-f6001d74839d",
       "name": "get_workflow_content"
     },
     {
@@ -143,10 +143,10 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        320,
-        0
+        1504,
+        496
       ],
-      "id": "a255d599-8154-4a66-85f6-c4beb98a3190",
+      "id": "dede307b-05e8-4894-84e8-431e02b3d4d9",
       "name": "get_restored_workflows",
       "executeOnce": true,
       "alwaysOutputData": true,
@@ -162,10 +162,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        528,
-        -16
+        1712,
+        480
       ],
-      "id": "be60fc29-ce78-4506-88aa-1875eed5cc26",
+      "id": "4402897f-dd8c-4d88-acad-5f5cff9829f8",
       "name": "get_not_restored"
     },
     {
@@ -214,10 +214,10 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        1760,
-        160
+        2944,
+        656
       ],
-      "id": "4a4d0152-9d62-48a4-9069-bddd15b27279",
+      "id": "9ef42ad4-781e-4b04-8239-d8bbd07600ff",
       "name": "save_restored_workflow_data",
       "retryOnFail": true,
       "waitBetweenTries": 2000,
@@ -229,10 +229,10 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1360,
-        -176
+        2544,
+        320
       ],
-      "id": "464fa896-aed6-4b28-851b-fc9847a9ae1b",
+      "id": "b0903ea9-55ec-40ec-8807-01a246ac99fe",
       "name": "workflows_restored"
     },
     {
@@ -244,10 +244,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        832,
-        -16
+        2016,
+        480
       ],
-      "id": "2fe9b81e-4549-49e3-a1e8-3a1e3686bd3f",
+      "id": "d0c42016-8c0d-438f-9a8d-2f862d443aee",
       "name": "loop_over_items"
     },
     {
@@ -258,43 +258,43 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -480,
-        -224
+        704,
+        272
       ],
       "typeVersion": 1,
-      "id": "52cc58a7-c8e4-45cf-80de-7ecfcbb3c487",
+      "id": "2b94ced6-77ba-49bb-832a-10246d33b2a1",
       "name": "Sticky Note"
     },
     {
       "parameters": {
         "content": "## Step 1\n- List the files in the GitHub repository root.\n- Keep only files that match the workflow backup filename format.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Paso 1\n- Obtener los archivos ubicados en la raíz del repositorio de GitHub.\n- Conservar únicamente los archivos que coincidan con el formato de nombre de los respaldos.",
-        "height": 816,
+        "height": 832,
         "width": 416,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -208,
-        -224
+        976,
+        272
       ],
       "typeVersion": 1,
-      "id": "a576f8ad-be77-48af-85a2-11206b73ae1c",
+      "id": "c2fc2fec-1724-4267-bf3d-b866fa7b1eba",
       "name": "Sticky Note1"
     },
     {
       "parameters": {
         "content": "## Step 2\n- Read the workflows already restored during the current recovery run from the control table.\n- Build the list of workflows that are still pending.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Paso 2\n- Obtener de la tabla de control los workflows ya restaurados durante la recuperación actual.\n- Generar el listado de workflows que todavía están pendientes.",
-        "height": 816,
+        "height": 832,
         "width": 416,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        256,
-        -224
+        1440,
+        272
       ],
       "typeVersion": 1,
-      "id": "29edd6b3-5a09-4294-9ab5-7b61acbb9873",
+      "id": "c3cf8da6-1174-4312-a88f-42b6c4754b5f",
       "name": "Sticky Note2"
     },
     {
@@ -306,24 +306,24 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        720,
-        -544
+        1904,
+        -48
       ],
       "typeVersion": 1,
-      "id": "10d90dfa-721a-4b6b-ad0b-f7e87008652c",
+      "id": "2915a62b-cc9e-405d-ba27-c1a7dec1ce45",
       "name": "Sticky Note3"
     },
     {
       "parameters": {
         "errorMessage": "={{ 'Error en la operación con GitHub. Detalle: ' + ($json.error?.message ?? $json.error ?? $json.message ?? 'sin detalle') }}"
       },
-      "id": "5a218d22-2934-4f88-9ffd-321354a5aa4b",
+      "id": "d7ae0c97-835d-4375-b628-30596b0f2e5a",
       "name": "github_repo_error",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        -160,
-        256
+        1024,
+        752
       ]
     },
     {
@@ -347,10 +347,10 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        1104,
-        -32
+        2288,
+        464
       ],
-      "id": "66149f18-dd6c-4aa9-af63-7068704257a9",
+      "id": "d8e63a65-7b91-4b24-a6d4-72a4c4a27412",
       "name": "truncate_control_table",
       "retryOnFail": true,
       "maxTries": 5,
@@ -361,39 +361,39 @@
       "parameters": {
         "errorMessage": "=El flujo se restauró completamente pero el checkpoint no se pudo almacenar. Se recomienda no ejecutar la restauración nuevamente hasta que el checkpoint sea agregado manualmente o se elimine la copia restaurada del flujo, caso contrario se podría crear un flujo duplicado: \nID original del flujo:  {{ $('get_workflow_content').item.json.id }}\nID del flujo restaurado: {{ $('restore_workflow').item.json.id }}\nNombre del flujo: {{ $('restore_workflow').item.json.name }}\nError: {{ $json?.error ?? 'Error restaurando el flujo' }}"
       },
-      "id": "1cf0eb0e-cd27-47d4-896d-854a9c1c765b",
+      "id": "9b6515ec-b92d-4fe4-b2d6-bbde65059a66",
       "name": "error_saving_restored_workflow",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        2000,
-        176
+        3184,
+        672
       ]
     },
     {
       "parameters": {
         "errorMessage": "=Los flujos se restauraron completamente pero la tabla no se pudo truncar. Se recomienda truncar la tabla manualmente para que quede lista para una ejecución posterior.\nError: {{ $json?.error ?? 'Error truncando la tabla' }}"
       },
-      "id": "685136c7-4f7a-44fb-833e-d22f87dfe826",
+      "id": "b7125f04-6bff-4d3a-a610-2bf7da9d16b1",
       "name": "error_truncating_control_table",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        1360,
-        -16
+        2544,
+        480
       ]
     },
     {
       "parameters": {
         "errorMessage": "=Hubo un error al tratar de obtener los flujos que ya fueron restaurados, comunícate con el administrador.\nError: {{ $json?.error ?? 'Error obteniendo los flujos restaurados' }}"
       },
-      "id": "caaaae9a-7fc7-4563-8c23-42b6fe9340e7",
+      "id": "f65d2964-2dea-4277-8e08-1de18be4bd31",
       "name": "error_geting_restored_worflows",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        320,
-        240
+        1504,
+        736
       ]
     },
     {
@@ -422,13 +422,13 @@
           }
         }
       },
-      "id": "ba19c798-76a4-413d-a5c6-1a26f44ae819",
+      "id": "bed8f901-d746-479e-b2b7-df5bf6ddc23a",
       "name": "get_workflow_file",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        1088,
-        160
+        2272,
+        656
       ],
       "credentials": {
         "githubOAuth2Api": {
@@ -446,11 +446,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1536,
-        -672
+        -352,
+        -176
       ],
       "typeVersion": 1,
-      "id": "0f038d3b-0805-467c-b6c7-5569f69f6e1a",
+      "id": "9d8bc026-cd2d-47e1-91bb-b52b59e32677",
       "name": "Sticky Note5"
     },
     {
@@ -460,13 +460,13 @@
         "width": 1008,
         "color": 5
       },
-      "id": "0948ae4a-1d67-4aae-afb9-87387cd66d4f",
+      "id": "7b7d0a50-36fd-468f-bdf6-70b30f5fc7ac",
       "name": "Workflow Overview",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1824,
-        -544
+        -640,
+        -48
       ]
     }
   ],
@@ -565,7 +565,13 @@
     },
     "save_restored_workflow_data": {
       "main": [
-        [],
+        [
+          {
+            "node": "loop_over_items",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "error_saving_restored_workflow",
@@ -637,21 +643,13 @@
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate",
-    "availableInMCP": false,
-    "timeSavedMode": "fixed",
-    "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 300,
-    "timezone": "America/Guayaquil"
+    "binaryMode": "separate"
   },
-  "versionId": "fcbdee97-2ad9-4c73-8ebf-c634184d339e",
+  "versionId": "f98be3c6-c7e5-410f-b993-30431a346478",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "aiBuilderAssisted": true,
-    "builderVariant": "mcp",
     "instanceId": "2dbd6c7d3be1f4241a7ad2edfd22a5875e50099b9c1e640814e10f21739b61be"
   },
   "nodeGroups": [],
-  "id": "H1bUZ3xOympdqxUV_s_CA",
+  "id": "OHylFpEAh7QiAij1",
   "tags": []
 }
