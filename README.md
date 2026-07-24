@@ -12,13 +12,15 @@ Backs up every non-archived n8n workflow as a readable JSON file in the root of 
 
 For faster processing and reliable comparisons, each filename includes the workflow ID and a deterministic semantic SHA-256 generated from the workflow data that affects its behavior: `nodes`, `connections`, and `settings`. The workflow can therefore compare the metadata encoded in filenames instead of downloading every existing JSON file from GitHub on each run. This reduces API requests, data transfer, memory usage, and execution time while producing accurate change detection for the selected properties.
 
-**[GitOps Engine backup workflow official n8n page template](https://n8n.io/workflows/17352)**
+**[GitOps Engine workflow official n8n page template](https://n8n.io/workflows/17352)**
 
 ### GitOps Restore Engine - Restore n8n Workflows from GitHub
 
 Restores n8n workflows from the JSON backups created by GitOps Engine and stored in the root of a GitHub repository. It cleans unsupported workflow settings before creation and uses an n8n Data Table as a temporary checkpoint, allowing an interrupted restoration to continue without processing completed backups again.
 
 Workflow files are downloaded through GitHub's raw content API because the standard Contents API does not include the `content` field for files larger than 1 MB. This allows GitOps Restore Engine to handle larger workflow backups without depending on the Base64 content returned by GitHub's native **Get file** operation.
+
+**[GitOps Restore Engine workflow official n8n page template](https://n8n.io/workflows/17388)**
 
 ## Follow me on my social networks
 
@@ -47,13 +49,15 @@ Respalda cada workflow no archivado de n8n como un archivo JSON legible en la ra
 
 Para lograr un procesamiento más rápido y comparaciones confiables, cada nombre de archivo incluye el ID del workflow y un SHA-256 semántico determinista generado a partir de los datos que afectan su comportamiento: `nodes`, `connections` y `settings`. De esta manera, el workflow puede comparar los metadatos incluidos en los nombres sin descargar desde GitHub todos los archivos JSON existentes en cada ejecución. Esto reduce las peticiones a la API, la transferencia de datos, el uso de memoria y el tiempo de ejecución, mientras detecta con precisión los cambios en las propiedades seleccionadas.
 
-**[Página oficial del template de n8n GitOps Engine](https://n8n.io/workflows/17352)**
+**[Página oficial del template GitOps Engine en n8n](https://n8n.io/workflows/17352)**
 
 ### GitOps Restore Engine - Restauración de workflows de n8n desde GitHub
 
 Restaura workflows de n8n a partir de los respaldos JSON creados por GitOps Engine y almacenados en la raíz de un repositorio de GitHub. Antes de crear cada workflow, elimina los settings no admitidos y utiliza una Data Table de n8n como checkpoint temporal, lo que permite continuar una restauración interrumpida sin volver a procesar los respaldos completados.
 
 Los archivos se descargan mediante el API de contenido raw de GitHub porque el Contents API estándar no incluye el campo `content` para archivos de más de 1 MB. Esto permite que GitOps Restore Engine procese respaldos de mayor tamaño sin depender del contenido Base64 devuelto por la operación nativa **Get file** de GitHub.
+
+**[Página oficial del template GitOps Restore Engine en n8n](https://n8n.io/workflows/17388)**
 
 ## Sígueme en mis redes sociales
 
