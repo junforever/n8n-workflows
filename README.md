@@ -28,8 +28,6 @@ Safely previews and deletes archived n8n workflows older than a configurable ret
 
 The workflow starts in `dry_run` mode, requires a `project_id` before live deletion, and processes deletions in configurable batches. Its final summary reports the archived total, candidates, protected workflows, retained workflows, successful deletions, and failures. Deletion is permanent and also removes the deleted workflow's execution history.
 
-**[Download the Archived Workflow Cleanup template](./Archived%20Workflow%20Cleanup.json)**
-
 ## Follow me on my social networks
 
 Follow me for practical content about automation, n8n, and AI development. I share real-world techniques, lessons, and details that almost nobody talks about—but that make a real difference when building solutions that actually work.
@@ -72,8 +70,6 @@ Los archivos se descargan mediante el API de contenido raw de GitHub porque el C
 Previsualiza y elimina de forma segura workflows archivados de n8n que superen un periodo de retención configurable. Descarta los workflows no archivados antes de clasificarlos y divide los archivados en tres grupos exclusivos: candidatos para eliminación, workflows conservados porque todavía están dentro del periodo de retención y workflows protegidos mediante una etiqueta configurable.
 
 El workflow comienza en modo `dry_run`, exige un `project_id` antes de habilitar la eliminación real y procesa los borrados en lotes configurables. Su resumen final informa el total de archivados, candidatos, workflows protegidos, workflows conservados, eliminaciones exitosas y errores. La eliminación es permanente y también borra el historial de ejecuciones del workflow eliminado.
-
-**[Descargar el template Archived Workflow Cleanup](./Archived%20Workflow%20Cleanup.json)**
 
 ## Sígueme en mis redes sociales
 
