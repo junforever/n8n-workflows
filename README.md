@@ -22,6 +22,14 @@ Workflow files are downloaded through GitHub's raw content API because the stand
 
 **[GitOps Restore Engine workflow official n8n page template](https://n8n.io/workflows/17388)**
 
+### Archived Workflow Cleanup - Safely Delete Old Archived Workflows
+
+Safely previews and deletes archived n8n workflows older than a configurable retention period. It filters out non-archived workflows before classification and separates archived workflows into three exclusive groups: deletion candidates, workflows retained because they are still within the retention period, and workflows protected by a configurable tag.
+
+The workflow starts in `dry_run` mode, requires a `project_id` before live deletion, and processes deletions in configurable batches. Its final summary reports the archived total, candidates, protected workflows, retained workflows, successful deletions, and failures. Deletion is permanent and also removes the deleted workflow's execution history.
+
+**[Download the Archived Workflow Cleanup template](./Archived%20Workflow%20Cleanup.json)**
+
 ## Follow me on my social networks
 
 Follow me for practical content about automation, n8n, and AI development. I share real-world techniques, lessons, and details that almost nobody talks about—but that make a real difference when building solutions that actually work.
@@ -58,6 +66,14 @@ Restaura workflows de n8n a partir de los respaldos JSON creados por GitOps Engi
 Los archivos se descargan mediante el API de contenido raw de GitHub porque el Contents API estándar no incluye el campo `content` para archivos de más de 1 MB. Esto permite que GitOps Restore Engine procese respaldos de mayor tamaño sin depender del contenido Base64 devuelto por la operación nativa **Get file** de GitHub.
 
 **[Página oficial del template GitOps Restore Engine en n8n](https://n8n.io/workflows/17388)**
+
+### Archived Workflow Cleanup - Eliminación segura de workflows archivados antiguos
+
+Previsualiza y elimina de forma segura workflows archivados de n8n que superen un periodo de retención configurable. Descarta los workflows no archivados antes de clasificarlos y divide los archivados en tres grupos exclusivos: candidatos para eliminación, workflows conservados porque todavía están dentro del periodo de retención y workflows protegidos mediante una etiqueta configurable.
+
+El workflow comienza en modo `dry_run`, exige un `project_id` antes de habilitar la eliminación real y procesa los borrados en lotes configurables. Su resumen final informa el total de archivados, candidatos, workflows protegidos, workflows conservados, eliminaciones exitosas y errores. La eliminación es permanente y también borra el historial de ejecuciones del workflow eliminado.
+
+**[Descargar el template Archived Workflow Cleanup](./Archived%20Workflow%20Cleanup.json)**
 
 ## Sígueme en mis redes sociales
 
