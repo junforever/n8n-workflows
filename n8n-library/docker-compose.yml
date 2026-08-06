@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: n8n-lib-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_POSTGRESDB_DATABASE:-n8n_library}
+      POSTGRES_USER: ${DB_POSTGRESDB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_POSTGRESDB_PASSWORD:-changeme}
+    volumes:
+      - pgdata-n8n-library:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-n8n_library}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  n8n-library:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: n8n-library
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3100}:3100"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3100/health'').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - uploads-n8n-library:/app/public/uploads
+
+volumes:
+  pgdata-n8n-library:
+  uploads-n8n-library:

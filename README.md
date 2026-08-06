@@ -30,6 +30,63 @@ The workflow starts in `dry_run` mode, requires a `project_id` before live delet
 
 **[Archived Cleanup workflow official n8n page template](https://n8n.io/workflows/17533)**
 
+## Additional Resources
+
+### n8n-library - Quick Local Setup (Docker)
+
+[n8n-library](https://github.com/LPilic/n8n-library) is an open-source, self-hosted companion application designed to extend and centralize the management of your [n8n](https://n8n.io) ecosystem.
+
+Although **the project is currently under active construction**, its available feature set already provides everything needed to perform powerful, effective monitoring and management across your n8n instances.
+
+#### Key Features & Highlights:
+
+- **Monitoring & Observability Dashboard**: Track execution statistics in real-time, inspect node-level timelines, activate/deactivate workflows, and monitor system performance (CPU, memory, queues, and worker health).
+- **Multi-Instance Support**: Easily monitor and switch between multiple n8n instances (e.g., Production, Staging, Dev) from a single unified interface.
+- **Template Library**: Browse, search, and import workflow templates directly into your n8n instances.
+- **Service Desk & Knowledge Base**: Manage internal incident tickets linked directly to n8n workflow executions, alongside a searchable documentation base.
+- **AI Assistant & MCP Integration**: Built-in chat powered by LLMs (Claude, OpenAI, Gemini, Groq, Ollama) with Model Context Protocol (MCP) support (such as `n8n-mcp`) to manage workflows via conversation.
+- **Role-Based Access & API Keys**: Granular permissions (Admin, Editor, Viewer) and API key generation for programmatic access.
+
+---
+
+The `n8n-library/` folder contains all the necessary files (`Dockerfile`, `docker-compose.yml`, and `.env`) ready to copy and paste directly into the root of the `n8n-library` project, allowing you to run it locally with Docker right away without having to change anything.
+
+#### Default Access Credentials:
+
+- **Email:** `admin@localhost`
+- **Password:** `admin`
+
+#### How to use:
+
+1. Clone or download the official [n8n-library](https://github.com/LPilic/n8n-library) repository.
+2. Copy the three files from the `n8n-library/` folder in this repo into the root of your cloned `n8n-library` project.
+3. Run the following command in your terminal:
+   ```bash
+   docker compose up -d
+   ```
+4. Access the application in your browser at `http://localhost:3100/`.
+5. Log in using the default access credentials.
+6. Once inside, navigate to the `Admin` section in the left sidebar menu and select `Settings`.
+7. Inside the `Settings` section, click the `Add Instance` button.
+8. In the modal that appears, enter the following information:
+   - `Name`: Instance name
+   - `Environment`: Specify whether it is for development, staging, production, etc.
+   - `Internal URL`: The URL of your n8n instance (local or hosted on a VPS).
+   - `API Key`: API Key for your n8n instance (you must generate it in your n8n instance under `Settings` -> `n8n API` -> `Create API Key`).
+9. Click `Save`.
+10. Done! Now go to the `Main` section, select `Dashboard`, and your instance should appear as `Healthy`.
+
+> [!WARNING]
+> **Environment Variables & Production Deployment Notice:**
+>
+> - The included `.env` file contains default values intended strictly for **local testing**. **DO NOT USE THESE VALUES ON A VPS OR IN PRODUCTION.**
+> - Default credentials (`admin@localhost` / `admin`) **must be changed immediately for production deployments**.
+> - To generate a secure `SESSION_SECRET` value in the Windows console, run:
+>   ```powershell
+>   openssl rand -hex 32
+>   ```
+>   _(If `openssl` is not recognized, install it with `winget install openssl`)_
+
 ## Follow me on my social networks
 
 Follow me for practical content about automation, n8n, and AI development. I share real-world techniques, lessons, and details that almost nobody talks about—but that make a real difference when building solutions that actually work.
@@ -74,6 +131,63 @@ Previsualiza y elimina de forma segura workflows archivados de n8n que superen u
 El workflow comienza en modo `dry_run`, exige un `project_id` antes de habilitar la eliminación real y procesa los borrados en lotes configurables. Su resumen final informa el total de archivados, candidatos, workflows protegidos, workflows conservados, eliminaciones exitosas y errores. La eliminación es permanente y también borra el historial de ejecuciones del workflow eliminado.
 
 **[Página oficial del template Archived Cleanup en n8n](https://n8n.io/workflows/17533)**
+
+## Recursos adicionales
+
+### n8n-library - Configuración rápida en local (Docker)
+
+[n8n-library](https://github.com/LPilic/n8n-library) es una aplicación complementaria (_companion app_) de código abierto y autoalojada (_self-hosted_), diseñada para centralizar y potenciar la gestión de tu ecosistema de [n8n](https://n8n.io).
+
+Aunque **el proyecto se encuentra actualmente en construcción**, las funcionalidades que ya tiene listas ofrecen todo lo necesario para realizar un monitoreo continuo, preciso y altamente efectivo de tus flujos e instancias de n8n.
+
+#### Funcionalidades destacadas:
+
+- **Dashboard de Monitoreo y Observabilidad**: Visualiza estadísticas de ejecución en tiempo real, inspecciona detalles a nivel de nodos, activa o desactiva flujos y monitorea el rendimiento del sistema (CPU, memoria, colas de ejecución y salud de workers).
+- **Soporte Multi-Instancia**: Monitorea y alterna fácilmente entre múltiples entornos de n8n (ej. Producción, Staging, Desarrollo) desde un único panel centralizado.
+- **Biblioteca de Templates**: Explora, busca e importa plantillas de workflows directamente hacia tus instancias de n8n.
+- **Service Desk y Base de Conocimientos**: Sistema de tickets para soporte enlazado a ejecuciones específicas de n8n y gestión de artículos de documentación interna.
+- **Asistente IA e Integración MCP**: Chat integrado impulsado por LLMs (Claude, OpenAI, Gemini, Groq, Ollama) con soporte para servidores Model Context Protocol (como `n8n-mcp`) para administrar flujos mediante conversación.
+- **Control de Acceso (RBAC) y API Keys**: Roles de usuario (Admin, Editor, Viewer) con permisos granulares y generación de API keys para acceso programático.
+
+---
+
+El contenido de la carpeta `n8n-library/` incluye los archivos necesarios (`Dockerfile`, `docker-compose.yml` y `.env`) listos para copiar y pegar directamente en la raíz de tu proyecto `n8n-library` y poder ejecutarlo en local mediante Docker sin tener que modificar nada.
+
+#### Credenciales de acceso por defecto:
+
+- **Email:** `admin@localhost`
+- **Password:** `admin`
+
+#### Cómo usarlo:
+
+1. Clona o descarga el proyecto oficial de [n8n-library](https://github.com/LPilic/n8n-library).
+2. Copia los tres archivos de la carpeta `n8n-library/` de este repositorio a la raíz de tu proyecto `n8n-library` local.
+3. Ejecuta el siguiente comando en la consola:
+   ```bash
+   docker compose up -d
+   ```
+4. Accede a la aplicación desde tu navegador en `http://localhost:3100/`.
+5. Ingresa las credenciales de acceso por defecto.
+6. Una vez dentro, en el menú lateral izquierdo ve a la sección `Admin` y selecciona la opción `Settings`.
+7. Dentro de la sección `Settings`, clic en el botón `Add Instance`.
+8. En el modal que aparece, ingresa la siguiente información:
+   - `Name`: Nombre de la instancia
+   - `Environment`: Especifica si es para desarrollo, staging, producción, etc.
+   - `Internal URL`: La url de la instancia (local o en una VPS) de n8n.
+   - `API Key`: API Key de la instancia de n8n (debes crearla en la configuración de tu instancia de n8n, menú `Settings` -> `n8n API` -> `Create API Key`).
+9. Clic en Save.
+10. ¡Listo! Ahora ve a la sección `Main` opción `Dashboard` y tu instancia debe aparecer como `Healthy`.
+
+> [!WARNING]
+> **Variables de entorno y aviso de seguridad:**
+>
+> - El archivo `.env` en la carpeta contiene valores por defecto pensados netamente para **pruebas en local**. **NO DEBEN USARSE ESOS VALORES PARA UN DESPLIEGUE EN UNA VPS O PRODUCCIÓN.**
+> - De igual forma, las credenciales por defecto (`admin@localhost` / `admin`) **deben ser cambiadas obligatoriamente para producción**.
+> - Para generar el valor de la variable de entorno `SESSION_SECRET` en la consola de Windows, ejecuta:
+>   ```powershell
+>   openssl rand -hex 32
+>   ```
+>   _(Si te sale que `openssl` no es reconocido, instálalo con `winget install openssl`)_
 
 ## Sígueme en mis redes sociales
 
