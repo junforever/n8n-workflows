@@ -120,6 +120,7 @@ The `n8n-mcp-config/` folder contains pre-configured environment templates and o
 >
 > - **Capabilities**: Connecting via MCP allows you to create new workflows and query your n8n instance. Workflows created via MCP automatically have MCP access enabled by default.
 > - **Existing Workflows**: If you need to work on or modify an existing workflow, you must go to that specific workflow's settings in n8n and enable **Available in MCP**. If this setting is disabled, n8n will block edits and return a **Permission Denied** error.
+> - **Project-Local Scope**: This MCP configuration is local to the project folder. The n8n MCP server and skills will only be available when opening Claude Code or Codex inside this directory, unless configured globally in your tool.
 
 ## Follow me on my social networks
 
@@ -256,6 +257,7 @@ La carpeta `n8n-mcp-config/` contiene plantillas preconfiguradas y las skills of
 >
 > - **Capacidades**: Esto permite crear flujos y realizar consultas sobre la instancia de n8n. Los flujos que se crean por MCP ya vienen con la opción de acceso activada por defecto.
 > - **Flujos Existentes**: Si deseas modificar o trabajar en un flujo ya existente, debes ir a la configuración de ese flujo en n8n y habilitar la opción **Available in MCP**. De lo contrario, no se podrán realizar cambios en ese flujo y la herramienta devolverá un error de **Permiso denegado**.
+> - **Alcance Local**: Esta configuración de MCP es exclusiva y local a la carpeta del proyecto. El servidor MCP y las skills de n8n no estarán disponibles fuera de este directorio a menos que se instalen o configuren de forma global en la herramienta.
 
 ## Sígueme en mis redes sociales
 
