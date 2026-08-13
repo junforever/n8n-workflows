@@ -3,7 +3,7 @@
     "allow": [
       "Bash(claude mcp *)",
       "Bash(cat ~/.claude/settings.json 2>/dev/null | head -100)",
-      "Read(//c/Users/User/.claude/**)",
+      "Read(//c/Users/your-windows-user-name/.claude/**)",
       "mcp__n8n-mcp__get_sdk_reference",
       "mcp__n8n-mcp__get_suggested_nodes",
       "mcp__n8n-mcp__search_nodes",
