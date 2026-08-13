@@ -1,0 +1,3 @@
+[mcp_servers.n8n-mcp]
+url = "https://your-n8n-instance-url/mcp-server/http"
+http_headers = { "authorization" = "Bearer your-n8n-instance-api-key" }

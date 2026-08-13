@@ -87,6 +87,40 @@ The `n8n-library/` folder contains all the necessary files (`Dockerfile`, `docke
 >   ```
 >   _(If `openssl` is not recognized, install it with `winget install openssl`)_
 
+### n8n-mcp-config - Ready-to-Use n8n MCP Setup for Claude Code & Codex
+
+The `n8n-mcp-config/` folder contains pre-configured environment templates and official n8n skills (as of today) to connect n8n via Model Context Protocol (MCP) with **Claude Code** or **Codex**. This enables high-quality, AI-assisted workflow creation, inspection, and management directly from your terminal.
+
+#### What's Included:
+- **`claude-code/`**: Project template for Claude Code (contains `.mcp.json` and `.claude/settings.local.json`), pre-configured with official n8n skills.
+- **`codex/`**: Project template for Codex (contains `.codex/config.toml`), pre-configured with official n8n skills.
+
+#### How to Setup:
+
+1. **Enable MCP Access in n8n**:
+   - In your n8n instance, go to **Settings** -> **Instance level MCP**.
+   - Turn on MCP access by enabling the **MCP status** option.
+
+2. **Prepare Your Project Folder**:
+   - Download or copy the contents of either the `claude-code/` or `codex/` folder (depending on the tool you use) into a folder that will serve as your working project directory.
+
+3. **Update Configuration Credentials**:
+   - **For Codex**:
+     - Open `.codex/config.toml`.
+     - Replace `your-n8n-instance-url` with your n8n instance URL and `your-n8n-instance-api-key` with your n8n API Key.
+   - **For Claude Code**:
+     - Open `.mcp.json` and replace `your-n8n-instance-url` and `your-n8n-instance-api-key`.
+     - Open `.claude/settings.local.json` and replace `your-windows-user-name` with your Windows username.
+
+4. **Start Creating Automations**:
+   - Open **Claude Code** or **Codex** inside your project folder and start building workflows right away.
+
+> [!IMPORTANT]
+> **Working with Existing Workflows & Permissions:**
+>
+> - **Capabilities**: Connecting via MCP allows you to create new workflows and query your n8n instance. Workflows created via MCP automatically have MCP access enabled by default.
+> - **Existing Workflows**: If you need to work on or modify an existing workflow, you must go to that specific workflow's settings in n8n and enable **Available in MCP**. If this setting is disabled, n8n will block edits and return a **Permission Denied** error.
+
 ## Follow me on my social networks
 
 Follow me for practical content about automation, n8n, and AI development. I share real-world techniques, lessons, and details that almost nobody talks about—but that make a real difference when building solutions that actually work.
@@ -188,6 +222,40 @@ El contenido de la carpeta `n8n-library/` incluye los archivos necesarios (`Dock
 >   openssl rand -hex 32
 >   ```
 >   _(Si te sale que `openssl` no es reconocido, instálalo con `winget install openssl`)_
+
+### n8n-mcp-config - Configuración Lista para n8n MCP en Claude Code y Codex
+
+La carpeta `n8n-mcp-config/` contiene plantillas preconfiguradas y las skills oficiales de n8n (a fecha de hoy) para conectar n8n mediante Model Context Protocol (MCP) con **Claude Code** o **Codex**. Esto permite la creación de flujos de trabajo de alta calidad, consultas e interacciones asistidas por IA directamente desde tu consola.
+
+#### ¿Qué incluye?
+- **`claude-code/`**: Plantilla de proyecto para Claude Code (incluye `.mcp.json` y `.claude/settings.local.json`), preconfigurada con las skills oficiales de n8n.
+- **`codex/`**: Plantilla de proyecto para Codex (incluye `.codex/config.toml`), preconfigurada con las skills oficiales de n8n.
+
+#### Pasos para la configuración:
+
+1. **Habilitar MCP en la instancia de n8n**:
+   - En tu instancia de n8n, ve al menú **Settings** -> **Instance level MCP**.
+   - Activa el acceso por MCP en la opción **MCP status**.
+
+2. **Preparar la carpeta del proyecto**:
+   - Descarga o copia el contenido de la carpeta `claude-code/` o `codex/` (según el programa que utilices) y pégalo en una carpeta que usarás como directorio de proyecto para la herramienta respectiva.
+
+3. **Configurar las credenciales**:
+   - **Para Codex**:
+     - Abre el archivo `.codex/config.toml`.
+     - Reemplaza `your-n8n-instance-url` por la URL de tu instancia y `your-n8n-instance-api-key` por tu API Key de n8n.
+   - **Para Claude Code**:
+     - Abre el archivo `.mcp.json` y reemplaza `your-n8n-instance-url` y `your-n8n-instance-api-key`.
+     - Abre el archivo `.claude/settings.local.json` y reemplaza `your-windows-user-name` por tu nombre de usuario de Windows.
+
+4. **Comenzar a automatizar**:
+   - Abre **Claude Code** o **Codex** en la carpeta de proyecto correspondiente y ¡listo!, ya puedes comenzar a crear automatizaciones.
+
+> [!IMPORTANT]
+> **Permisos y Trabajo con Flujos Existentes:**
+>
+> - **Capacidades**: Esto permite crear flujos y realizar consultas sobre la instancia de n8n. Los flujos que se crean por MCP ya vienen con la opción de acceso activada por defecto.
+> - **Flujos Existentes**: Si deseas modificar o trabajar en un flujo ya existente, debes ir a la configuración de ese flujo en n8n y habilitar la opción **Available in MCP**. De lo contrario, no se podrán realizar cambios en ese flujo y la herramienta devolverá un error de **Permiso denegado**.
 
 ## Sígueme en mis redes sociales
 
