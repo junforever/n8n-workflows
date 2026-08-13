@@ -89,9 +89,10 @@ The `n8n-library/` folder contains all the necessary files (`Dockerfile`, `docke
 
 ### n8n-mcp-config - Ready-to-Use n8n MCP Setup for Claude Code & Codex
 
-The `n8n-mcp-config/` folder contains pre-configured environment templates and official n8n skills (as of today) to connect n8n via Model Context Protocol (MCP) with **Claude Code** or **Codex**. This enables high-quality, AI-assisted workflow creation, inspection, and management directly from your terminal.
+The `n8n-mcp-config/` folder contains pre-configured environment templates and official n8n skills (as of today, August 2026) to connect n8n via Model Context Protocol (MCP) with **Claude Code** or **Codex**. This enables high-quality, AI-assisted workflow creation, inspection, and management directly from your terminal.
 
 #### What's Included:
+
 - **`claude-code/`**: Project template for Claude Code (contains `.mcp.json` and `.claude/settings.local.json`), pre-configured with official n8n skills.
 - **`codex/`**: Project template for Codex (contains `.codex/config.toml`), pre-configured with official n8n skills.
 
@@ -226,9 +227,10 @@ El contenido de la carpeta `n8n-library/` incluye los archivos necesarios (`Dock
 
 ### n8n-mcp-config - Configuración Lista para n8n MCP en Claude Code y Codex
 
-La carpeta `n8n-mcp-config/` contiene plantillas preconfiguradas y las skills oficiales de n8n (a fecha de hoy) para conectar n8n mediante Model Context Protocol (MCP) con **Claude Code** o **Codex**. Esto permite la creación de flujos de trabajo de alta calidad, consultas e interacciones asistidas por IA directamente desde tu consola.
+La carpeta `n8n-mcp-config/` contiene plantillas preconfiguradas y las skills oficiales de n8n (a fecha de hoy, Agosto 2026) para conectar n8n mediante Model Context Protocol (MCP) con **Claude Code** o **Codex**. Esto permite la creación de flujos de trabajo de alta calidad, consultas e interacciones asistidas por IA directamente desde tu consola.
 
 #### ¿Qué incluye?
+
 - **`claude-code/`**: Plantilla de proyecto para Claude Code (incluye `.mcp.json` y `.claude/settings.local.json`), preconfigurada con las skills oficiales de n8n.
 - **`codex/`**: Plantilla de proyecto para Codex (incluye `.codex/config.toml`), preconfigurada con las skills oficiales de n8n.
 
