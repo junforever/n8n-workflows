@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp *)",
+      "Bash(cat ~/.claude/settings.json 2>/dev/null | head -100)",
+      "Read(//c/Users/User/.claude/**)",
+      "mcp__n8n-mcp__get_sdk_reference",
+      "mcp__n8n-mcp__get_suggested_nodes",
+      "mcp__n8n-mcp__search_nodes",
+      "mcp__n8n-mcp__get_node_types",
+      "mcp__n8n-mcp__validate_workflow"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "n8n"
+  ]
+}
